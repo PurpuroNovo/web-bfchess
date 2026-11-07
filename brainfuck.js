@@ -181,7 +181,7 @@ export class BrainfuckRuntime {
                     return lines;
                 }
             }
-            if ((Date.now() - start) > 30*1000) { // 30 second timeout
+            if ((Date.now() - start) > 60*1000) { // 60 second timeout
                 return lines;
             }
         }
