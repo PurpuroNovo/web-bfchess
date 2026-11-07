@@ -1,6 +1,6 @@
 //const ENGINE_URL = "https://raw.githubusercontent.com/acherm/agentic-chessengine-brainfuck/refs/heads/master/chess.bf";
 
-import { BrainfuckRuntime, brainfuckToTokens } from "./brainfuck";
+import { BrainfuckRuntime } from "./brainfuck";
 
 export class BFChess {
     constructor(tokens) {
