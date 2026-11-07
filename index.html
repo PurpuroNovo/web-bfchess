@@ -1,35 +1,53 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Brainfuck</title>
-    <link rel="stylesheet"
-      href="https://unpkg.com/@chrisoakman/chessboardjs@1.0.0/dist/chessboard-1.0.0.min.css"
-      integrity="sha384-q94+BZtLrkL1/ohfjR8c6L+A6qzNH9R2hBLwyoAfu3i/WCvQjzL2RQJ3uNHDISdU"
-      crossorigin="anonymous">
+    <link rel="stylesheet" href="https://unpkg.com/@chrisoakman/chessboardjs@1.0.0/dist/chessboard-1.0.0.min.css"
+        integrity="sha384-q94+BZtLrkL1/ohfjR8c6L+A6qzNH9R2hBLwyoAfu3i/WCvQjzL2RQJ3uNHDISdU" crossorigin="anonymous">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@6.0.0-alpha.1/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-B/GM4XqrwHnWXNOWMbloTmrYXZg10cakYGmpfsR/bbzQ6JAJI4ihuyADKLnBgrCe" crossorigin="anonymous">
+    <script type="module" src="https://cdn.jsdelivr.net/npm/bootstrap@6.0.0-alpha.1/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-1a/pXj49ZQ1aHEmrJ+gMw1otqoVsYwlEnlD8mIfY2TV03r20Y0CN7uqx1tQogjPL"
+        crossorigin="anonymous"></script>
 </head>
-<body>
-    <h1>Are you better at chess than a vibecoded engine written in Brainfuck?</h1>
-    <span>This <a href="https://github.com/acherm/agentic-chessengine-brainfuck">engine</a> was made by Mathieu Acher and Claude.</span>
-    <br>
-    <span>It uses python to build a brainfuck code for the engine. (If it did raw brainfuck then that would be scary)</span>
-    <br>
-    <span>In my computer it takes 4 to 40 seconds to make a move.</span>
-    <br>
-    <br>
-    <span>Unlike the engine, the wrapper around it on this website isn't vibecoded.</span>
 
-    <div id="board1" style="width: 400px"></div>
-    
+<body>
+    <div style="padding: 50px;">
+        <h1>Are you better at chess than a vibecoded engine written in Brainfuck?</h1>
+        <span>This <a href="https://github.com/acherm/agentic-chessengine-brainfuck">engine</a> was made by <a href="https://github.com/acherm">Mathieu Acher</a>
+            and Claude.</span>
+        <br>
+        <span>It uses python to build a brainfuck code for the engine. (If it did raw brainfuck then that would be
+            scary)</span>
+        <br>
+        <span>In my computer it takes 4 to 40 seconds to make a move.</span>
+        <br>
+        <br>
+        <span>Each time it makes a move it will halt your browser. I know, I'll fix this later.</span>
+        <br>
+        <br>
+        <button disabled type="button" class="btn-solid" id="playWhite">Play as white</button>
+        <button disabled type="button" class="btn-solid theme-inverse" id="playBlack">Play as black</button>
+        <button disabled type="button" class="btn-solid theme-info" id="playRandom">Play as random.</button>
+        <button disabled type="button" class="btn-solid theme-accent" id="downloadPGN">Download PGN</button>
+        <br>
+        <br>
+        <div id="board1" style="width: 400px"></div>
+        <span id="engineSpan">Loading engine.</span>
+    </div>
+
     <script src="https://code.jquery.com/jquery-3.5.1.min.js"
         integrity="sha384-ZvpUoO/+PpLXR1lu4jmpXWu80pZlYUAfxl5NsBMWOEPSjUn/6Z/hRTt8+pR6L4N2"
         crossorigin="anonymous"></script>
 
     <script src="https://unpkg.com/@chrisoakman/chessboardjs@1.0.0/dist/chessboard-1.0.0.min.js"
-            integrity="sha384-8Vi8VHwn3vjQ9eUHUxex3JSN/NFqUg3QbPyX8kWyb93+8AC/pPWTzj+nHtbC5bxD"
-            crossorigin="anonymous"></script>
+        integrity="sha384-8Vi8VHwn3vjQ9eUHUxex3JSN/NFqUg3QbPyX8kWyb93+8AC/pPWTzj+nHtbC5bxD"
+        crossorigin="anonymous"></script>
 
     <script type="module" src="main.js"></script>
 </body>
+
 </html>

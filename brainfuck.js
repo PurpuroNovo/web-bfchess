@@ -176,6 +176,7 @@ export class BrainfuckRuntime {
         while (true) {
             output += this.run(10**6);
             lines = output.split("\n");
+            lines = lines.splice(0, lines.length - 1); // The splice is needed so that an uncompleted line doesn't finish early
             for (const line of lines) {
                 if (line.startsWith(prefix)) {
                     return lines;
