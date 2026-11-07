@@ -1,4 +1,4 @@
-import { BrainfuckRuntime, brainfuckToTokens } from "./brainfuck";
+import { BFChess } from "./engine";
 
 //const ENGINE_URL = "https://raw.githubusercontent.com/acherm/agentic-chessengine-brainfuck/refs/heads/master/chess.bf";
 
@@ -10,14 +10,6 @@ fetch("chess.json").then(async (response) => {
 
     const engineCode = await response.text();
     const tokens = JSON.parse(engineCode);
-    let runtime = new BrainfuckRuntime(tokens, 2000);
-
-    runtime.send("uci");
-    runtime.readUntil("uciok");
-    runtime.send("isready");
-    runtime.readUntil("readyok");
-    runtime.send("position startpos\n");
-    //runtime.send("domove d2d4\n")
-    runtime.send("go")
-    console.log(runtime.readUntil("bestmove"));
+    let engine = new BFChess(tokens);
+    console.log(engine.bestMove());
 });

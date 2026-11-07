@@ -172,14 +172,17 @@ export class BrainfuckRuntime {
     readUntil(prefix) {
         let output = "";
         let lines = [];
-        let tries = 200;
-        for (let index = 0; index < tries; index++) {
-            output += this.run(10**7);
+        let start = Date.now();
+        while (true) {
+            output += this.run(10**6);
             lines = output.split("\n");
             for (const line of lines) {
                 if (line.startsWith(prefix)) {
                     return lines;
                 }
+            }
+            if ((Date.now() - start) > 30*1000) { // 30 second timeout
+                return lines;
             }
         }
         return lines;
