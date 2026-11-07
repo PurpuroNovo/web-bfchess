@@ -3,8 +3,6 @@ This runtime is made specifically for the engine in mind
 If the brainfuck code had a loop that didn't start where it ended, this would break.
 */
 
-const ENGINE_URL = "https://raw.githubusercontent.com/acherm/agentic-chessengine-brainfuck/refs/heads/master/chess.bf";
-
 const ADD   = 1;
 const WHILE = 4;
 const END   = 5;
@@ -15,7 +13,7 @@ const SET   = 8;
 const COPY  = 9;
 const MUL   = 10;
 
-function brainfuckToTokens(engineCode) {
+export function brainfuckToTokens(engineCode) {
     let pointer = 0;
     let tokens = [{"type": SET, "value": 0, "pointer": 0}];
     let loopDepth = 0;
@@ -81,7 +79,7 @@ function brainfuckToTokens(engineCode) {
                         // This is move or multiply
 
                         for (const key in mask) {
-                            keyInt = parseInt(key);
+                            let keyInt = parseInt(key);
                             if (keyInt != 0) {
                                 const keyValue = parseInt(mask[key]);
                                 if (keyValue == 1) {
@@ -103,76 +101,87 @@ function brainfuckToTokens(engineCode) {
     return tokens;
 }
 
-fetch(ENGINE_URL).then(async (response) => {
-    let newDiv = document.createElement("span");
-    newDiv.textContent = "Downloaded code, tokenizing it...";
-    document.body.appendChild(newDiv);
-    document.body.appendChild(document.createElement("br"));
-
-    const engineCode = await response.text();
-    let tokens = brainfuckToTokens(engineCode);
-
-    console.log(`IR length: ${tokens.length}`);
-
-    tokens.forEach((instruction) => {
-        let newSpan = document.createElement("span");
-        newSpan.textContent = JSON.stringify(instruction);
-        document.body.appendChild(newSpan);
-        document.body.appendChild(document.createElement("br"));
-    });
-
-    setTimeout(() => {
-    let input = "uci\nisready\nposition startpos\ngo".split("");
-    let out = "";
-    const memory = new Uint8Array(3000);
-    let currentInstruction = 0
-    while(currentInstruction < tokens.length) {
-        const instruction = tokens[currentInstruction];
-        if (instruction == undefined) break;
-        const value = instruction.value;
-        const pointer = instruction.pointer;
-
-        switch (instruction.type) {
-            case ADD:
-                memory[pointer] += value;
-                break;
-            case SET:
-                memory[pointer] = value;
-                break;
-            case COPY:
-                memory[pointer+value] += memory[pointer];
-                break;
-            case MUL:
-                memory[pointer+value] += memory[pointer]*instruction.mul;
-                break;
-            case WHILE:
-                if (memory[pointer] == 0) {
-                    currentInstruction = instruction.siblingToken;
-                }
-                break;
-            case END:
-                if (memory[pointer] != 0) {
-                    currentInstruction = instruction.siblingToken;
-                }
-                break;
-            
-            case OUT:
-                out += String.fromCharCode(memory[pointer]);
-                console.log(out);
-                break;
-            
-            case IN:
-                let inValue = 0;
-                if (input.length > 0) {
-                    inValue = input.shift().charCodeAt(0);
-                }
-                memory[pointer] = inValue;
-            default:
-                break;
-        }
-
-        currentInstruction++;
+export class BrainfuckRuntime {
+    constructor(tokens, memorySize) {
+        this.tokens = tokens;
+        this.memorySize = memorySize;
+        this.instructionPointer = 0;
+        this.memory = new Uint8Array(memorySize);
+        this.inputBuffer = [];
     }
 
-    }, 10*1000);
-})
+    reset() {
+        this.memory = new Uint8Array(this.memorySize);
+        this.instructionPointer = 0;
+        this.inputBuffer = [];
+    }
+
+    run(steps) {
+        let out = "";
+        for (let index = 0; index < steps; index++) {
+            const instruction = this.tokens[this.instructionPointer];
+            if (instruction == undefined) break;
+            const value = instruction.value;
+            const pointer = instruction.pointer;
+
+            switch (instruction.type) {
+                case ADD:
+                    this.memory[pointer] += value;
+                    break;
+                case SET:
+                    this.memory[pointer] = value;
+                    break;
+                case COPY:
+                    this.memory[pointer+value] += this.memory[pointer];
+                    break;
+                case MUL:
+                    this.memory[pointer+value] += this.memory[pointer]*instruction.mul;
+                    break;
+                case WHILE:
+                    if (this.memory[pointer] == 0) {
+                        this.instructionPointer = instruction.siblingToken;
+                    }
+                    break;
+                case END:
+                    if (this.memory[pointer] != 0) {
+                        this.instructionPointer = instruction.siblingToken;
+                    }
+                    break;
+                
+                case OUT:
+                    out += String.fromCharCode(this.memory[pointer]);
+                    break;
+                
+                case IN:
+                    let inValue = 0;
+                    if (this.inputBuffer.length > 0) inValue = this.inputBuffer.shift().charCodeAt(0);
+                    this.memory[pointer] = inValue;
+                default:
+                    break;
+            }
+
+            this.instructionPointer++;
+        }
+        return out;
+    }
+
+    send(text) {
+        this.inputBuffer = this.inputBuffer.concat(text.split(""));
+    }
+
+    readUntil(prefix) {
+        let output = "";
+        let lines = [];
+        let tries = 200;
+        for (let index = 0; index < tries; index++) {
+            output += this.run(10**7);
+            lines = output.split("\n");
+            for (const line of lines) {
+                if (line.startsWith(prefix)) {
+                    return lines;
+                }
+            }
+        }
+        return lines;
+    }
+}
